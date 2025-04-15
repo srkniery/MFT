@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Trail Map Embed&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html, body { margin: 0; padding: 0; height: 100%; width: 100%; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#map { height: 100vh; width: 100%; max-width: 480px; margin: auto; display: block; position: relative; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>#clear-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>top: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>right: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>z-index: 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #ccc;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 2px 4px rgba(0,0,0,0.1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.mapboxgl-popup {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 240px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="map"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button id="clear-btn"&gt;Clear Selection&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>mapboxgl.accessToken = 'pk.eyJ1Ijoic3JrbmllcnkiLCJhIjoiY20zNm9oYWl1MDdvODJrb2owZjh1YXQzZCJ9.w-ZF_O845yXGNqmFElS2TA';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const map = new mapboxgl.Map({</p>
+<p class="p1"><span class="Apple-converted-space">      </span>container: 'map',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>style: 'mapbox://styles/srkniery/cm5ip18xd003401qo70trc2ee',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>center: [-80.5, 38.2],</p>
+<p class="p1"><span class="Apple-converted-space">      </span>zoom: 11,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>pitch: 45,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bearing: 0,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>antialias: true</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const lineLayerId = 'trails-2rt4xb';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let selectedFeatureId = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let activePopup = null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>map.on('load', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Add highlight layer</p>
+<p class="p1"><span class="Apple-converted-space">      </span>map.addLayer({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>id: 'trail-highlight',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>type: 'line',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>source: map.getLayer(lineLayerId).source,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'source-layer': map.getLayer(lineLayerId)['source-layer'],</p>
+<p class="p1"><span class="Apple-converted-space">        </span>layout: {},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>paint: {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'line-color': '#FFA442',</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'line-width': 5</p>
+<p class="p1"><span class="Apple-converted-space">        </span>},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>filter: ['==', 'id', '']</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Click to highlight and popup</p>
+<p class="p1"><span class="Apple-converted-space">      </span>map.on('click', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const features = map.queryRenderedFeatures(e.point, { layers: [lineLayerId] });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (features.length &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const feature = features[0];</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const props = feature.properties;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const id = props.id || feature.id || props.OBJECTID || props.FID || null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Show popup</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const popupContent = `</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;strong&gt;${props.name || 'Trail Segment'}&lt;/strong&gt;&lt;br/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>Distance: ${props.distance || 'n/a'} mi&lt;br/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>Time: ${props.time || 'n/a'} min</p>
+<p class="p1"><span class="Apple-converted-space">          </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (activePopup) activePopup.remove();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>activePopup = new mapboxgl.Popup()</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.setLngLat(e.lngLat)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.setHTML(popupContent)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.addTo(map);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Highlight</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (id !== null) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>selectedFeatureId = id;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>map.setFilter('trail-highlight', ['==', 'id', selectedFeatureId]);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>map.on('mouseenter', lineLayerId, () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>map.getCanvas().style.cursor = 'pointer';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>map.on('mouseleave', lineLayerId, () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>map.getCanvas().style.cursor = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Clear selection button</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('clear-btn').addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>selectedFeatureId = null;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>map.setFilter('trail-highlight', ['==', 'id', '']);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (activePopup) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>activePopup.remove();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>activePopup = null;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
